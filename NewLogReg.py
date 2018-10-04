@@ -1,3 +1,4 @@
+#Fit a new logistic regression model with fewer features
 import pickle
 import pandas as pd
 import math
@@ -11,25 +12,15 @@ import os
 os.chdir("../chartlabdata-any")
 
 #Import the data to be fit
-wholedata=pickle.load(open("whole-dataset.pkl",'rb'))
-
-#Set up data to be fit by LogReg
-y = wholedata["expire"]
-
-#Add a column of ones, for the coefficient in Logistic Regression
-wholedata["constants"]=1
-
-#Specify all columns of data other than subject_id and expire flag
-X=wholedata.iloc[:,2:]
-
-#Print out statistics for eah column
-summary_statistics=X.describe()
+pickle_jar=pickle.load(open("smallerfeatures.pkl",'rb'))
+X=pickle_jar[0]
+y=pickle_jar[1]
 
 # Splitting the dataset randomly into the Training set and Test set
 from sklearn.cross_validation import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-##Importing statsmodels
+#Importing statsmodels
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
@@ -81,20 +72,18 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('Receiver operating characteristic')
 plt.legend(loc="lower right")
-plt.savefig('ROC-logreg.png', format='png')
+plt.savefig('ROC-newlogreg.png', format='png')
 plt.show()
 
-y_predict = logreg.predict(X_test)
-y_trainpredict = logreg.predict(X_train)
+y_predict=logreg.predict_proba(X_test)[:,1]
 
 #Calculate AUROC
 auroc=roc_auc_score(y_test, y_predict)
 print("The area under the ROC curve for the test set is = ",auroc)
 
-y_trainpredict = logreg.predict(X_train)
-auroc=roc_auc_score(y_train, y_trainpredict)
+y_trainpredict = logreg.predict_proba(X_train)
+auroc=roc_auc_score(y_train, y_trainpredict[:,1])
 print("The area under the ROC curve for the training set is = ",auroc)
-
 
 #Save the model and save results for ten people
 X_ten=X_train.iloc[0:10,:]
@@ -103,4 +92,3 @@ patients=wholedata["subject_id"].iloc[0:10]
 pickle_jar=[logreg,X_ten,y_ten,patients]
 
 pickle.dump(pickle_jar, open("model.pkl",'wb') )
-
