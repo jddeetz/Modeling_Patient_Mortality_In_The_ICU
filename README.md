@@ -1,12 +1,28 @@
-# icu-risk-prediction: Predicting the mortality risk of patients in the intensive care unit
+# Modeling_Patient_Mortality_In_The_ICU: Predicting the mortality risk of patients in the intensive care unit
 
 ## Motivation/Problem
 Physicians in hospital ICUs are overwhelmed with over 7,000 independent pieces of information each day, while simultaneously facing the pressure of making correct decisions, and long working hours. Emergency medical services are not well positioned to analyze all of the information at their disposal. A recent study estimates that physicians in the ICU make false negatives in predicting patient outcomes at a rate of 58% (Detsky, Harhay, and Bayard JAMA 2017).
 
 The motivation of this project is to develop a model for patient mortality in the ICU based on commonly available information, such as vital signs and blood labwork. 
 
-##Prerequisites
+A link to the powerpoint presentation detailing the results of this project: https://tinyurl.com/ybdufeau
+
+A link to a dashboard depicting patient mortalities and risk factors: http://vulcanapp.xyz
+
+![alt text](https://i.imgur.com/a7weOAk.png)
+
+## Prerequisites
 The code contained in this repository assumes that you have a working copy of the MIMIC-iii PostgreSQL database installed on your system. The pickle library is used for storing the outputs of several of the scripts between processing steps. Some standard machine learning libraries, such as numpy, pandas, sklearn, and tensorflow are also required.
+
+## How to Use
+### How to Form Training Set Data
+In order to form the training set data, a copy of the MIMIC-iii Postres database must be installed. "NewQuery-Any.py" will extract the necessary data, whereas "PreserveNumericalData.py", "CountLabChartItems.py", "EliminateMissingItems.py", "EasyTimeVectors.py", "CleanData.py" will formulate numerical data from patient lab and chart items. Categorical data about each patient is extracted using "ExtractCategorical.py". The categorical and numerical patient data are combines using "CombineNumericalCategorical.py". A more detailed description of each of these are below.
+
+### How to Train Models 
+Models can be trained using LogReg.py or RandomForest.py for these respective models. RandomForest.py also performs feature selection and needs to be run before NewLogReg.py or NeuralNetwork.py can be run, as these operate on a reduced feature set.
+
+### How to Make Inferences Using the Model
+LogReg.py and NewLogReg.py generate pickle files containing logistic regression objects that can be called on for inference. As examples, these pickle files also contain feature vectors for ten patients.
 
 ## Description of Python Files
 
