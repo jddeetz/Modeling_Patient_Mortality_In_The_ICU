@@ -9,6 +9,8 @@ A link to the powerpoint presentation detailing the results of this project: htt
 
 A link to a dashboard depicting patient mortalities and risk factors: http://vulcanapp.xyz
 
+A image of the dashboard is below, which displays the mortality risk of each patient and corresponding risk factors.
+
 ![alt text](https://i.imgur.com/a7weOAk.png)
 
 ## Prerequisites
