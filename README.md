@@ -18,18 +18,18 @@ The code contained in this repository assumes that you have a working copy of th
 
 ## How to Use
 ### How to Form Training Set Data
-In order to form the training set data, a copy of the MIMIC-iii Postres database must be installed. "NewQuery-Any.py" will extract the necessary data, whereas "PreserveNumericalData.py", "CountLabChartItems.py", "EliminateMissingItems.py", "EasyTimeVectors.py", "CleanData.py" will formulate numerical data from patient lab and chart items. Categorical data about each patient is extracted using "ExtractCategorical.py". The categorical and numerical patient data are combines using "CombineNumericalCategorical.py". A more detailed description of each of these are below.
+In order to form the training set data, a copy of the MIMIC-iii Postres database must be installed. "QueryDB.py" will extract the necessary data, whereas "PreserveNumericalData.py", "CountLabChartItems.py", "EliminateMissingItems.py", "EasyTimeVectors.py", "CleanData.py" will formulate numerical data from patient lab and chart items. Categorical data about each patient is extracted using "ExtractCategorical.py". The categorical and numerical patient data are combines using "CombineNumericalCategorical.py". A more detailed description of each of these are below. These files are located in the GetCleanData directory.
 
 ### How to Train Models 
-Models can be trained using LogReg.py or RandomForest.py for these respective models. RandomForest.py also performs feature selection and needs to be run before NewLogReg.py or NeuralNetwork.py can be run, as these operate on a reduced feature set.
+Models can be trained using LogReg.py or RandomForest.py for these respective models. RandomForest.py also performs feature selection and needs to be run before NewLogReg.py or NeuralNetwork.py can be run, as these operate on a reduced feature set. These scripts are in the "TrainModel" directory, along with a sample dataset to get users up and running without going through the messy data cleaning process outlined above.
 
 ### How to Make Inferences Using the Model
-LogReg.py and NewLogReg.py generate pickle files containing logistic regression objects that can be called on for inference. As examples, these pickle files also contain feature vectors for ten patients.
+LogReg.py and NewLogReg.py generate pickle files containing logistic regression objects that can be called on for inference. As examples, these pickle files also contain feature vectors for ten patients. Some python files for making inferences on the model are located in the Serve directory.
 
 ## Description of Python Files
 
 ### QueryDB.py 
-Used for the initial query to the Postgres database to derive information on a set of patients with specified ICD9 codes (physician diagnoses codes). Because the database query time on the chartevents table is quite long, due to the fact that it contains ~30GB of data, we only look at 100 patients here. 
+Performs a Database query on a sample of 2000 patients, but with a limited set of chart and lab event items that are represented by a substantial number of the patients. Used for the initial query to the Postgres database to derive information on a set of patients.
 
 ### PreserveNumericalData.py
 Preserves numerical information about the patients from their lab and chart events, discards textual and categorical information from these sources.
@@ -39,9 +39,6 @@ Counts the number of instances that each chart and lab item is listed for each p
 
 ### EliminateMissingItems.py
 Eliminates chart and lab items that are not represented among at least 80% of the patients at least once. Also eliminates patients from the training data that are missing more than 20% of the features.
-
-### NewQuery-Any.py
-Performs a Database query on an expanded list of 2000 patients, but with a more limited set of chart and lab event items. 
 
 ### EasyTimeVectors.py
 Extracts features from the chart and lab events time series data. Vectorizes this information by considering a 48 hour time window, over which numerical features are their statistics summarized.
